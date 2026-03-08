@@ -2,9 +2,7 @@
 
 use MyDatabase
 
-----------------------------------------------------------------------------
---A: Manipulation--
-----------------------------------------------------------------------------
+
 --Concat-> combine multi string into one--
 -- task-> combine first name and country into one column --
 
