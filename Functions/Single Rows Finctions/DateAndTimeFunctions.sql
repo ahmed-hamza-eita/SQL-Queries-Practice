@@ -1,5 +1,5 @@
 use SalesDB
---Extraction Functions-> Extract part of the dates--
+-- A- Extraction Functions-> Extract part of the dates--
 
 --Day-> returns the day from date
 --Month-> returns the month from date
@@ -94,5 +94,40 @@ select * from Sales.Orders
 where month(CreationTime)=3 --DATENAME(MONTH,CreationTime) ='march'  -> in filter always use the intger that faster while searching
 order by OrderID ASC
 
---Functions Comparison--
+----------------------------------------------------------------------------------------------------------
+-- B- Format->
 
+select OrderID, CreationTime,
+format(CreationTime,'dd MMM yyyy')
+from Sales.Orders
+
+/*task-> show creationTime such as following format:
+         Day wed Jan Q1 2025 12:55:33 PM
+*/
+select CreationTime,
+'Day ' + format(CreationTime,'ddd MMM') +
+' Q'+DATENAME(QUARTER,CreationTime) +
+FORMAT(CreationTime,' yyyy hh:mm:ss tt')
+from Sales.Orders
+
+--Formatting use case-> data aggregation--
+select FORMAT(OrderDate, 'MMM yyy'),
+count(*)
+from Sales.Orders
+group by FORMAT(OrderDate,'MMM yyy')
+
+--Convert -> convert data type of data
+select CreationTime,
+convert(date,CreationTime,34) AS [DateTime to Date]
+from Sales.Orders
+
+--C- Cast-> convert data type of data
+select CreationTime,
+cast(CreationTime as date) AS [DateTime to Date]
+from Sales.Orders
+
+
+/* Difference between convert and cast ?
+cast-> ANSI standard and not allow style (date formatting)
+convert-> allow style
+*/
