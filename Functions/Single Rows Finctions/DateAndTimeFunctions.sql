@@ -48,7 +48,7 @@ DATETRUNC(YEAR,CreationTime) AS YearTrunk
 from Sales.Orders
 
 
---task-> Get total orders in all months
+--task-> Get total number of orders in all months
 select 
 DATETRUNC(MONTH,CreationTime),
 count(*) as NumOfOrders
@@ -64,5 +64,35 @@ YEAR(CreationTime) AS Year,
 MONTH(CreationTime) AS Month,
 DAY(CreationTime) AS Day,
 EOMONTH(CreationTime) AS EndOfMonth,
-cast (DATETRUNC(MONTH,CreationTime) AS Date) StartOfMonth
+cast(DATETRUNC(MONTH,CreationTime) AS Date) StartOfMonth
 from Sales.Orders	
+
+----------------------------------------------------------------------------------------------------------
+
+--Use Cases of Extraction Functions--
+
+--Data Aggergation--
+--task-> how many orders in each month?
+select 
+DATENAME(MONTH,CreationTime) as MonthName,
+count(*) as NumberOfOrder
+from Sales.Orders
+group by DATENAME(MONTH,CreationTime) 
+order by DATENAME(MONTH,CreationTime) DESC
+
+--Data Filtering--
+--task-> get num of orders that were placed during the month of march?
+select 
+DATENAME(MONTH,CreationTime) as month_name,
+count(*) as NumberOfOrder
+from Sales.Orders
+group by DATENAME(MONTH,CreationTime)
+having DATENAME(MONTH,CreationTime) = 'march'
+
+--task-> show all orders that were placed during the month of march?
+select * from Sales.Orders
+where month(CreationTime)=3 --DATENAME(MONTH,CreationTime) ='march'  -> in filter always use the intger that faster while searching
+order by OrderID ASC
+
+--Functions Comparison--
+
