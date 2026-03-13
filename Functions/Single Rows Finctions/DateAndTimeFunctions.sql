@@ -95,8 +95,9 @@ where month(CreationTime)=3 --DATENAME(MONTH,CreationTime) ='march'  -> in filte
 order by OrderID ASC
 
 ----------------------------------------------------------------------------------------------------------
--- B- Format->
+-- B- Format and Casting part->
 
+--Format--
 select OrderID, CreationTime,
 format(CreationTime,'dd MMM yyyy')
 from Sales.Orders
@@ -131,3 +132,53 @@ from Sales.Orders
 cast-> ANSI standard and not allow style (date formatting)
 convert-> allow style
 */
+
+----------------------------------------------------------------------------------------------------------
+-- C- Calculation Part or mathematical operations on date ---
+
+--DateAdd-> Add or subtract a specific time interval to/from date
+select OrderDate,
+DateAdd(YEAR,2,OrderDate) AS [Add NewYear],
+DateAdd(YEAR,-2,OrderDate) AS [Sub Year]
+from Sales.Orders
+
+select OrderDate,
+DateAdd(YEAR,2,OrderDate) AS [Add NewYear],
+DateAdd(YEAR,-2,DateAdd(YEAR,2,OrderDate)) AS [Sub Year]
+from Sales.Orders
+
+--DateDiff-> difference between two dates
+select OrderDate,ShipDate,
+DATEDIFF(YEAR,OrderDate,ShipDate)
+from Sales.Orders
+
+select
+EmployeeID,BirthDate,
+DATEDIFF(year,BirthDate,GETDATE()) AS AGE
+from Sales.Employees
+
+
+--IMP--
+--task-> Find the avg shipping duration in days for each month
+select  MONTH(OrderDate),
+AVG(DateDiff(day,OrderDate,ShipDate))as  [AVG Shipping Duration]
+from Sales.Orders
+group by MONTH(OrderDate)
+
+--IMP--
+--Time Gap Analysis
+--Find the num of days between each order and previous order
+select
+OrderID,
+OrderDate currentDate,
+LAG(OrderDate) over (order by(OrderDate)) PreviousDate,
+DATEDIFF(DAY,LAG(OrderDate) over (order by(OrderDate)),OrderDate) numOfDays
+from Sales.Orders
+
+----------------------------------------------------------------------------------------------------------
+
+--Validation Part--
+--IsDate-> check the value is a date 
+-- return 1 if the value is a date
+
+select IsDate('2025-08-12') ,Isdate('123') 
