@@ -59,3 +59,36 @@ Select
 	sum(sales) over() total_sales,
 	round((cast(sales as float) / sum(sales) over()) * 100,2)  percentage_of_total_sales
 from Sales.Orders
+
+------------------------------------------------------------------------------------------------
+--Average--
+
+/* Find the avg sales across all orders
+   and the avg of sales of each product
+   provide details such as order id and order daete */
+
+   select
+	   OrderID,OrderDate,ProductID,sales,
+	   avg(coalesce(sales,0)) over () AVG_sales,
+	   avg(coalesce(sales,0)) over (partition by productId) AVG_sales_by_product
+   from Sales.Orders
+
+--Find the avg of scores of customers and provide details of customers.
+select
+	CustomerID,LastName,score,
+	coalesce(score,0) handle_null,
+	avg(coalesce(score,0)) over () AVG_Score
+from Sales.Customers
+
+
+--Find all orders where sales are higher than the avg sales across all orders
+select * from (
+	select
+		OrderID,Sales,
+		avg(sales) over() AVG_Sales
+	from Sales.Orders
+)t
+where sales >AVG_Sales
+
+
+------------------------------------------------------------------------------------------------
