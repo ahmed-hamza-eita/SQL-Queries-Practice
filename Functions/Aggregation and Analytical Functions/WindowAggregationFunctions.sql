@@ -45,3 +45,17 @@ from (
 where checkPK>1
 
 ------------------------------------------------------------------------------------------------
+--Sum--
+select
+	orderID,orderDate,productId,Sales,
+	sum(sales) over()  total_sales,
+	sum(sales) over(partition by productId) total_sales_by_product
+from Sales.Orders
+
+
+--Find the percentage contribution of each prduct's sales to the total sales.
+Select 
+	OrderID,ProductID,Sales,
+	sum(sales) over() total_sales,
+	round((cast(sales as float) / sum(sales) over()) * 100,2)  percentage_of_total_sales
+from Sales.Orders
