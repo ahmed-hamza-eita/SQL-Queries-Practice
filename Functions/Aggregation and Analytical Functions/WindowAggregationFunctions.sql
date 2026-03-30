@@ -124,3 +124,21 @@ select
 from Sales.Orders
 
 ------------------------------------------------------------------------------------------------
+--Important use case for Aggergate Fun--
+
+--Running Total=> Aggregate all values from beginning up to current point (without drop old values)
+--Rolling Total=> Aggregate all values within a fixed time window (with drop old data) called shifting window
+
+--Calc moving ang of sales for each product over time .
+--Calc moving ang of sales for each product over time, including only the next order .
+select 
+	OrderID,ProductID,orderDate,
+	avg(sales) over() AVG_Sales,
+	avg(sales) over(partition by productId) Avg_By_Product ,
+	avg(sales) over(partition by productId order by orderDate) Moving_Avg,
+	avg(sales) over(partition by productId order by orderDate rows between current row and 1 following) Rolling_Avg
+from Sales.Orders
+
+ 
+
+
