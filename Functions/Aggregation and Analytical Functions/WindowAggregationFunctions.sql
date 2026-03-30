@@ -92,3 +92,35 @@ where sales >AVG_Sales
 
 
 ------------------------------------------------------------------------------------------------
+--Min - Max--
+
+--Find the lowest and highest sales for all orders and each product.
+select 
+	OrderID,OrderDate,Sales,productId,
+	max(sales) over() high_sales,
+	min(sales) over() lowest_sales,
+	max(sales) over(partition by productId) high_sale_by_product,
+	min(sales) over(partition by productId) lowest_sale_by_product
+from Sales.Orders
+
+--Show employee who have highest salaries.
+
+select * from (
+	select
+	*,
+	max(Salary) over() high_salary
+	from Sales.Employees 
+)t
+where Salary=high_salary
+
+
+--Calc the deviation of each sales from the min and max sales amount
+select
+	OrderID,OrderDate,Sales,productId,
+	max(sales) over() high_sales,
+	min(sales) over() lowest_sales,
+	sales - min(sales) over() deviation_from_min,
+	max(sales) over() - sales deviation_from_max
+from Sales.Orders
+
+------------------------------------------------------------------------------------------------
