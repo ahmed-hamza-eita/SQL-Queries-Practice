@@ -1,5 +1,7 @@
 use SalesDB
 
+--Ingege Based Ranking Functions--
+
 /*Row Number: Assign unique num for each row 
 			  It doesn't handle ties That means if two rows sharing	the same value , will not share same rank
 			  No gaps
@@ -94,4 +96,21 @@ from (
 		,*
 	from Sales.Orders
 )t
+
+-------------------------------------------------------------------------------------------------------------
+--Percentage Based Ranking Functions  (cume dist - percent rank)--
+
+--Find the products that fall within the highest 40% of the prices.
+
+select 
+	*,
+	concat(DistRank,'%') DistRankPercent
+from (
+	select
+		Product,Price,
+		cume_dist() over(order by price desc) DistRank
+	from Sales.Products
+)t
+where DistRank <=0.4
+
 
