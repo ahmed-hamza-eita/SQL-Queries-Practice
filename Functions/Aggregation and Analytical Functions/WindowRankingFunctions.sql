@@ -61,3 +61,37 @@ select * from (
 		*
 	from Sales.OrdersArchive)t
 where flag=1
+
+
+-------------------------------------------------------------------------------------------------------------------
+--Ntile use cases--
+
+--Data segmentation--
+--Task-> Segment all orders into 3 categories :high, medium and low sales.
+select 
+	*,
+	CASE when Buckets=	1 then 'High'	
+		 when Buckets=	2 then 'Medium'
+		 when Buckets=	3 then 'Low'
+	END SalesSegmentation
+from(
+		select
+			OrderID,Sales,
+			ntile(3) over(order by sales desc) Buckets
+	from Sales.Orders
+)t
+
+--Equalizing load processing--
+--In order to export data , devide the order into 2 groups.
+select 
+	case when backet=1 then 'Group 1'
+		 when backet=2 then 'Group 2' 	
+	end GroupedOrder,
+	*
+from (
+	select
+		ntile(2) over(order by orderId) backet
+		,*
+	from Sales.Orders
+)t
+
