@@ -18,6 +18,7 @@ from (
 
 
 
+
 /*Analyze customer loyalty by ranking customers based on the average
 number of days between orders */
 select
@@ -53,3 +54,20 @@ WHERE DaysBetweenOrders IS NOT NULL
 GROUP BY CustomerID
 
 
+
+
+
+--First and Last Value--
+--Find The lowest and highest sales for each product 
+--First means lowest , highest means last
+--Compare current sales with lowest sales
+select
+	orderID,ProductID,Sales,
+	FIRST_VALUE(sales) over(partition by productId order by sales) LowestValue1,
+	MIN(sales) over(partition by productId) LowestValue2,
+	LAST_VALUE(sales) over(partition by productId order by sales
+			ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) HighestValue1,
+	First_VALUE(sales) over(partition by productId order by sales DESC) HighestValue2,
+	MAX(sales) over(partition by productId) HighestValue3,
+	sales - 	FIRST_VALUE(sales) over(partition by productId order by sales) SalesDifference
+from Sales.Orders
