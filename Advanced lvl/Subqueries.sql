@@ -66,3 +66,14 @@ Left join(
     from Sales.Orders
     group by CustomerID) o
 ON c.CustomerID=o.CustomerID
+
+
+select 
+    c.*, o.TotalOrders
+from Sales.Customers c
+Left join(
+    select 
+        CustomerID,count(*) TotalOrders
+    from Sales.Orders
+    group by CustomerID) o
+ON c.CustomerID=o.CustomerID
