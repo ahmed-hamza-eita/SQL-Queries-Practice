@@ -77,3 +77,35 @@ Left join(
     from Sales.Orders
     group by CustomerID) o
 ON c.CustomerID=o.CustomerID
+
+
+-- 4- WHERE SubQueries ---
+--Find the products that have a price higher than the average price of all products--
+select
+    productID,Price ,
+    (select avg(Price) from Sales.Products) AVGPrice
+from Sales.Products
+where price > (select avg(Price) from Sales.Products)
+
+
+--Show the details of orders made by the cutomers in germany--
+select
+    * 
+from Sales.Orders 
+where CustomerID IN (select CustomerID from Sales.Customers where Country='Germany' )
+
+
+--Find female emoployees whose salaries are greater than the salaries of any male employees--
+select 
+    *
+from Sales.Employees
+where Gender ='F' AND Salary <Any (select Salary from Sales.Employees where Gender='M' )
+
+
+--Find female emoployees whose salaries are greater than the salaries of all male employees--
+select 
+    *
+from Sales.Employees
+where Gender ='F' AND Salary >ALL (select Salary from Sales.Employees where Gender='M' )
+
+---------------------------------------------------------------------------------------------------------------------
