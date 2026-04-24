@@ -108,4 +108,36 @@ select
 from Sales.Employees
 where Gender ='F' AND Salary >ALL (select Salary from Sales.Employees where Gender='M' )
 
+
+
+
+
+
 ---------------------------------------------------------------------------------------------------------------------
+-- C ====== Dependancy Type-> NoN-Correlated and Correlated Subquery ======
+---------------------------------------------------------------------------
+/* NoN-Correlated: Subquery run independt from main query 
+   Correlated: Subquery depend on values from main query */
+
+
+
+--Find all customer details and find the total orders for each customer--
+SELECT 
+    *,
+    (SELECT
+        COUNT(*)
+     FROM Sales.Orders sub
+     WHERE sub.CustomerID = main.CustomerID) TotalOrder  --Correlated
+FROM Sales.Customers main
+
+
+---Exists operator---
+--Show the details of orders made by customers in Germany--
+select 
+    *
+from Sales.Orders o
+where exists (select
+                    * 
+              from Sales.Customers c
+              where country='Germany' and c.CustomerID =o.CustomerID )
+ 
